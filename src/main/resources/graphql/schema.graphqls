@@ -1,0 +1,51 @@
+type Query {
+    search(text: String): [SearchItem!]!
+    athlete(id: ID) : Athlete
+}
+
+union SearchItem = Club | Athlete
+
+type Club {
+    id: ID!
+    name: String!
+    totalMembers: Int!
+}
+
+type Athlete {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    activities: [Activity!]!
+}
+
+interface Activity {
+    id: ID!
+    description: String!
+    comments: [Comment!]
+}
+
+type Comment {
+    text: String!
+}
+
+type Run implements Activity{
+    id: ID!
+    description: String!
+    comments: [Comment!]
+    elevation: Int  # In meters.
+}
+
+type Swim implements Activity {
+    id: ID!
+    description: String!
+    comments: [Comment!]
+    laps: Int
+    indoor: Boolean
+}
+
+type Rowing implements Activity {
+    id: ID!
+    description: String!
+    comments: [Comment!]
+    split: Int  # Seconds per 500 meters.
+}
