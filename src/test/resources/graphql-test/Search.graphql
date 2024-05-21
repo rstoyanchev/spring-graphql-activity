@@ -1,0 +1,16 @@
+query Search($text: String) {
+    search(text:$text) {
+        ... on Club {
+            __typename
+            id
+            name
+            totalMembers
+        }
+        ... on Athlete {
+            __typename
+            id
+            firstName
+            lastName
+        }
+    }
+}
