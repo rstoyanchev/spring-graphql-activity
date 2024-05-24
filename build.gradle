@@ -30,6 +30,7 @@ generateJava {
 	packageName = 'com.example.activity.codegen'
 	includeQueries = ["athlete"]
 	generateClient = true
+	generateDataTypes = true
 }
 
 tasks.register('clientRun', JavaExec) {

@@ -1,7 +1,8 @@
 package com.example.activity;
 
-import com.example.activity.codegen.types.Activity;
-import com.example.activity.codegen.types.Athlete;
+import com.example.activity.athlete.Athlete;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.HttpSyncGraphQlClient;
-import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestClient;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * Perform requests synchronously and asynchronously (for concurrent requests)
@@ -26,12 +23,15 @@ import static java.util.stream.Collectors.joining;
 @Import(RestClientAutoConfiguration.class)
 public class ClientApp implements ApplicationRunner {
 
-	private final HttpSyncGraphQlClient graphQlClient;
+	private static final Log logger = LogFactory.getLog(ClientApp.class);
+
+
+	private final HttpSyncGraphQlClient client;
 
 
 	public ClientApp(@Autowired RestClient.Builder builder) {
 		RestClient restClient = builder.baseUrl("http://localhost:8080/graphql").build();
-		this.graphQlClient = HttpSyncGraphQlClient.builder(restClient).build();
+		this.client = HttpSyncGraphQlClient.builder(restClient).build();
 	}
 
 
@@ -42,51 +42,21 @@ public class ClientApp implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
+		String document = "athlete";
 
-		String path = "athlete";
+		logger.debug("Sync retrieve");
+		Athlete athlete = requestFor(document, 10L).retrieveSync(document).toEntity(Athlete.class);
+		logger.debug(athlete);
 
-		System.out.println("\nSync retrieve:");
-		System.out.println("==============================");
-
-		Athlete athlete = athleteRequest(10L).retrieveSync(path).toEntity(Athlete.class);
-		System.out.println(formatAthlete(athlete));
-
-		System.out.println("\nAsync:");
-		System.out.println("==============================");
-
-		Mono<Athlete> mono1 = athleteRequest(24L).retrieve(path).toEntity(Athlete.class);
-		Mono<Athlete> mono2 = athleteRequest(66L).retrieve(path).toEntity(Athlete.class);
-		Mono<Athlete> mono3 = athleteRequest(70L).retrieve(path).toEntity(Athlete.class);
-
-		Mono.zip(mono1, mono2, mono3)
-				.doOnNext((tuple) -> {
-					System.out.println(formatAthlete(tuple.getT1()));
-					System.out.println(formatAthlete(tuple.getT2()));
-					System.out.println(formatAthlete(tuple.getT3()));
-				})
-				.block();
+		logger.debug("Async retrieve");
+		Mono<Athlete> mono1 = requestFor(document, 24L).retrieve(document).toEntity(Athlete.class);
+		Mono<Athlete> mono2 = requestFor(document, 66L).retrieve(document).toEntity(Athlete.class);
+		Mono<Athlete> mono3 = requestFor(document, 70L).retrieve(document).toEntity(Athlete.class);
+		Mono.zip(mono1, mono2, mono3).doOnNext(logger::debug).block();
 	}
 
-	private GraphQlClient.RequestSpec athleteRequest(long id) {
-		return this.graphQlClient.documentName("GetAthlete").variable("id", id);
-	}
-
-	private static String formatAthlete(@Nullable Athlete athlete) {
-		return "\n" + (athlete != null ? athlete.getFirstName() + " " + athlete.getLastName() + ", " +
-				"(id=" + athlete.getId() + "). " + formatActivities(athlete) : null);
-	}
-
-	private static String formatActivities(Athlete athlete) {
-		return (!CollectionUtils.isEmpty(athlete.getActivities()) ?
-				"Activities:" + athlete.getActivities().stream()
-						.map(activity -> "> " + activity.getDescription() + ". " + formatComments(activity))
-						.collect(joining("\n\t", "\n\t", "")) : ". ");
-	}
-
-	private static String formatComments(Activity activity) {
-		return (!CollectionUtils.isEmpty(activity.getComments()) ?
-				"Comments:" + activity.getComments().stream()
-						.map(comment -> "- " + comment.getText()).collect(joining("\n\t\t", "\n\t\t", "")) : "");
+	private GraphQlClient.RequestSpec requestFor(String document, long id) {
+		return this.client.documentName(document).variable("id", id);
 	}
 
 }

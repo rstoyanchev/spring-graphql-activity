@@ -21,7 +21,7 @@ class SearchControllerTests {
 
 	@Test
 	void search() {
-		this.graphQlTester.documentName("Search")
+		this.graphQlTester.documentName("search")
 				.variable("text", "ca")
 				.execute()
 				.path("search").entityList(SearchItem.class).satisfies(items -> {

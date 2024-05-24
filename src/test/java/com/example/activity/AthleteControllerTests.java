@@ -1,7 +1,7 @@
 package com.example.activity;
 
 import com.example.activity.athlete.AthleteController;
-import com.example.activity.codegen.types.Athlete;
+import com.example.activity.athlete.Athlete;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,9 @@ class AthleteControllerTests {
 		this.graphQlTester.document("query {athlete(id:10) {id, firstName, lastName}}")
 				.execute()
 				.path("athlete").entity(Athlete.class).satisfies(athlete -> {
-					assertThat(athlete.getId()).isEqualTo("10");
-					assertThat(athlete.getFirstName()).isEqualTo("June");
-					assertThat(athlete.getLastName()).isEqualTo("Holt");
+					assertThat(athlete.id()).isEqualTo(10);
+					assertThat(athlete.firstName()).isEqualTo("June");
+					assertThat(athlete.lastName()).isEqualTo("Holt");
 				});
 	}
 

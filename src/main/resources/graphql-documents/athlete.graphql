@@ -1,0 +1,7 @@
+query GetAthlete($id: ID) {
+    athlete(id: $id) {
+        id
+        firstName
+        lastName
+    }
+}
