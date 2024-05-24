@@ -23,7 +23,8 @@ import org.springframework.web.client.RestClient;
 import static java.util.stream.Collectors.joining;
 
 /**
- * {@link DgsGraphQlClient} with DGS generated client API.
+ * Variation of {@link ClientApp} that uses DGS generated client API
+ * through {@link HttpSyncGraphQlClient} with {@link RestClient}.
  */
 @Import(RestClientAutoConfiguration.class)
 public class ClientDgsApp implements ApplicationRunner {

@@ -10,7 +10,9 @@ public abstract class FakerUtils {
 	private static final Faker faker = new Faker();
 
 	public static final Weather weather = faker.weather();
+
 	public static final Mood mood = faker.mood();
+
 	public static final Shakespeare shakespeare = faker.shakespeare();
 
 

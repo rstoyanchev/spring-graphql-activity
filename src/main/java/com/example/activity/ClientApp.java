@@ -1,10 +1,7 @@
 package com.example.activity;
 
-import java.util.List;
-
 import com.example.activity.codegen.types.Activity;
 import com.example.activity.codegen.types.Athlete;
-import com.example.activity.codegen.types.Comment;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +20,8 @@ import org.springframework.web.client.RestClient;
 import static java.util.stream.Collectors.joining;
 
 /**
- * {@link HttpSyncGraphQlClient} performing sync and async requests, using request
- * documents under {@literal src/main/resources/graphql-documents}.
+ * Perform requests synchronously and asynchronously (for concurrent requests)
+ * through {@link HttpSyncGraphQlClient} with {@link RestClient}.
  */
 @Import(RestClientAutoConfiguration.class)
 public class ClientApp implements ApplicationRunner {

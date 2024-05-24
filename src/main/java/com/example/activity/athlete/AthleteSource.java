@@ -87,7 +87,7 @@ public abstract class AthleteSource {
 
 	private static List<Comment> generateComments() {
 		Set<Comment> set = new HashSet<>();
-		int targetSize = anInt(0, 3);
+		int targetSize = anInt(1, 3);
 		while (set.size() < targetSize) {
 			set.add(new Comment(shakespeare.asYouLikeItQuote()));
 		}

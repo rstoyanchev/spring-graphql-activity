@@ -24,11 +24,7 @@ interface Activity {
     comments: [Comment!]
 }
 
-type Comment {
-    text: String!
-}
-
-type Run implements Activity{
+type Run implements Activity {
     id: ID!
     description: String!
     comments: [Comment!]
@@ -48,4 +44,8 @@ type Rowing implements Activity {
     description: String!
     comments: [Comment!]
     split: Int  # Seconds per 500 meters.
+}
+
+type Comment {
+    text: String!
 }
