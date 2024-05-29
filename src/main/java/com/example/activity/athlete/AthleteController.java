@@ -18,6 +18,7 @@ public class AthleteController {
 
 	@QueryMapping
 	public Athlete athlete(@Argument Long id) {
+		logger.debug("Getting athlete " + id);
 		return AthleteSource.getAthlete(id);
 	}
 

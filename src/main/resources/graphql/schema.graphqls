@@ -1,6 +1,6 @@
 type Query {
-    search(text: String): [SearchItem!]!
     athlete(id: ID) : Athlete
+    search(text: String): [SearchItem!]!
 }
 
 union SearchItem = Club | Athlete
